@@ -8,6 +8,7 @@ import (
 	"git.kanosolution.net/kano/dbflex"
 	"git.kanosolution.net/kano/dbflex/orm"
 	"github.com/ariefdarmawan/datahub"
+	"github.com/eaciit/toolkit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -41,6 +42,10 @@ func (m *Message) SetID(keys ...interface{}) {
 }
 
 func (m *Message) PreSave(conn dbflex.IConnection) error {
+	if m.ID == "" {
+		m.ID = primitive.NewObjectID().Hex()
+	}
+
 	if m.Status == "" {
 		m.Status = "Open"
 		m.Created = time.Now()
@@ -48,7 +53,7 @@ func (m *Message) PreSave(conn dbflex.IConnection) error {
 	return nil
 }
 
-func (m *Message) CreateSendAudit(h *datahub.Hub, status string, attempt int, errTxt string) error {
+func (m *Message) CreateAudit(h *datahub.Hub, status string, attempt int, errTxt string) error {
 	sa := new(sendAudit)
 	sa.ID = primitive.NewObjectID().Hex()
 	sa.MessageID = m.ID
@@ -65,7 +70,7 @@ func (m *Message) CreateSendAudit(h *datahub.Hub, status string, attempt int, er
 	return nil
 }
 
-func (m *Message) SendAudits(h *datahub.Hub) ([]sendAudit, error) {
+func (m *Message) Audits(h *datahub.Hub) ([]sendAudit, error) {
 	res := []sendAudit{}
 	w := dbflex.Eq("MessageID", m.ID)
 	cmd := dbflex.From(new(Message).TableName()).Where(w)
@@ -88,4 +93,26 @@ func NewMessage(h *datahub.Hub, kind, method, from, to, title, message string) (
 		return nil, errors.New("system error when create message: " + e.Error())
 	}
 	return msg, nil
+}
+
+func NewMessageFromTemplate(h *datahub.Hub, msg *Message, templateName string, langID string, data toolkit.M) error {
+	var e error
+
+	t := new(Template)
+	if e = h.GetByFilter(t, dbflex.And(dbflex.Eq("Name", templateName), dbflex.Eq("LanguageID", langID))); e != nil {
+		return e
+	}
+
+	tm, e := t.BuildMessage(data)
+	if e != nil {
+		return errors.New("template-error: " + e.Error())
+	}
+	msg.Title = tm.Title
+	msg.Messsage = tm.Messsage
+
+	if e = h.Save(msg); e != nil {
+		return e
+	}
+
+	return nil
 }

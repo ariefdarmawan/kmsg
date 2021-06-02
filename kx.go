@@ -4,15 +4,15 @@ import (
 	"errors"
 	"time"
 
-	"git.kanosolution.net/kano/dbflex/orm"
 	"git.kanosolution.net/kano/kaos"
+	"github.com/eaciit/toolkit"
 )
 
 type kx struct {
 	senders map[string]Sender
 }
 
-func NewKaosEngine() *kx {
+func NewKaosModel() *kx {
 	k := new(kx)
 	k.senders = make(map[string]Sender)
 	return k
@@ -23,15 +23,53 @@ func (k *kx) RegisterSender(s Sender, name string) *kx {
 	return k
 }
 
-func (k *kx) Send(ctx *kaos.Context, id string) (string, error) {
+type SendTemplateRequest struct {
+	Message      *Message
+	TemplateName string
+	LanguageID   string
+	Data         toolkit.M
+}
+
+func (obj *kx) SendTemplate(ctx *kaos.Context, request *SendTemplateRequest) (string, error) {
 	var e error
 	h, _ := ctx.DefaultHub()
 	if h == nil {
 		return "", errors.New("invalid hub")
 	}
 
-	m := orm.NewDataModel(new(Message)).SetObjectID(id).(*Message)
-	if e = h.Get(m); e != nil {
+	if e = NewMessageFromTemplate(h, request.Message, request.TemplateName, request.LanguageID, request.Data); e != nil {
+		return "", e
+	}
+	go obj.SendByID(ctx, request.Message.ID)
+
+	return request.Message.ID, nil
+}
+
+func (obj *kx) SendMessage(ctx *kaos.Context, request *Message) (string, error) {
+	var e error
+	h, _ := ctx.DefaultHub()
+	if h == nil {
+		return "", errors.New("invalid hub")
+	}
+
+	if e = h.Save(request); e != nil {
+		return "", e
+	}
+
+	go obj.SendByID(ctx, request.ID)
+
+	return request.ID, nil
+}
+
+func (k *kx) SendByID(ctx *kaos.Context, id string) (string, error) {
+	var e error
+	h, _ := ctx.DefaultHub()
+	if h == nil {
+		return "", errors.New("invalid hub")
+	}
+
+	m := new(Message)
+	if e = h.GetByID(m, id); e != nil {
 		return "", errors.New("invalid message: " + e.Error())
 	}
 
@@ -52,11 +90,11 @@ func (k *kx) Send(ctx *kaos.Context, id string) (string, error) {
 			m.Status = "Fail"
 			h.Save(m)
 
-			m.CreateSendAudit(h, "Fail", m.SendingAttempt, e.Error())
+			m.CreateAudit(h, "Fail", m.SendingAttempt, e.Error())
 			return
 			//return "", errors.New("process error: " + e.Error())
 		}
-		m.CreateSendAudit(h, "Success", m.SendingAttempt, "")
+		m.CreateAudit(h, "Success", m.SendingAttempt, "")
 
 		m.Status = "Sent"
 		m.Sent = time.Now()
