@@ -1,10 +1,11 @@
-package kmsg
+package ksnsg
 
 import (
 	"errors"
 	"time"
 
 	"git.kanosolution.net/kano/kaos"
+	. "github.com/ariefdarmawan/kmsg"
 	"github.com/eaciit/toolkit"
 )
 
@@ -28,6 +29,20 @@ type SendTemplateRequest struct {
 	TemplateName string
 	LanguageID   string
 	Data         toolkit.M
+}
+
+func (obj *kx) Create(ctx *kaos.Context, payload *Message) (string, error) {
+	h, _ := ctx.DefaultHub()
+	if h == nil {
+		return "", errors.New("missingDBConn")
+	}
+
+	msg, e := NewMessage(h, payload.Kind, payload.Method, payload.From, payload.To, payload.Title, payload.Messsage)
+	if e != nil {
+		return "", e
+	}
+
+	return msg.ID, nil
 }
 
 func (obj *kx) SendTemplate(ctx *kaos.Context, request *SendTemplateRequest) (string, error) {
