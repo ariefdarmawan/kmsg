@@ -1,4 +1,4 @@
-package ksnsg
+package ksmsg
 
 import (
 	"errors"
