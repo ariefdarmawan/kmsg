@@ -37,6 +37,7 @@ func (s *smtp) Send(msg *kmsg.Message) error {
 	m.SetHeader("To", msg.To)
 	m.SetHeader("Subject", msg.Title)
 	m.SetBody("text/html", msg.Messsage)
+
 	// todo - attachment
 
 	if e := d.DialAndSend(m); e != nil {

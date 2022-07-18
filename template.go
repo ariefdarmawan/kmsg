@@ -1,24 +1,22 @@
 package kmsg
 
 import (
-	"bytes"
 	"errors"
-	"text/template"
 
 	"git.kanosolution.net/kano/dbflex"
 	"git.kanosolution.net/kano/dbflex/orm"
-	"github.com/eaciit/toolkit"
+	"github.com/sebarcode/codekit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Template struct {
 	orm.DataModelBase `bson:"-" json:"-"`
-	ID                string `bson:"_id,omitempty" json:"_id,omitempty" key:"1" grid-show:"include" form-show:"hide"`
-	Name              string `kf-pos:"1,1" required:"1" search:"1"`
-	LanguageID        string `kf-pos:"1,2"`
-	Title             string `kf-pos:"2,1" required:"1" search:"1"`
-	Group             string `kf-pos:"4,1"`
-	Message           string `kf-control:"html" kf-multirow:"10" kf-pos:"3,1" required:"1" grid-show:"hide"`
+	ID                string `bson:"_id,omitempty" json:"_id,omitempty" key:"1" grid:"include" form:"hide"`
+	Name              string `form_pos:"1,1" form_required:"1" grid_keyword:"1" grid_sortable:"1"`
+	LanguageID        string `form_pos:"1,2" grid_keyword:"1" grid_sortable:"1"`
+	Title             string `form_pos:"2,1" form_required:"1" grid_keyword:"1" grid_sortable:"1"`
+	Group             string `form_pos:"4,1"`
+	Message           string `form_kind:"html" form_multirow:"10" form_pos:"3,1" form_required:"1" grid:"hide"`
 }
 
 func (m *Template) TableName() string {
@@ -42,7 +40,7 @@ func (m *Template) PreSave(_ dbflex.IConnection) error {
 	return nil
 }
 
-func (t *Template) BuildMessage(m toolkit.M) (*Message, error) {
+func (t *Template) BuildMessage(m codekit.M) (*Message, error) {
 	msg := new(Message)
 	if s, e := translate(t.Title, m); e == nil {
 		msg.Title = s
@@ -55,20 +53,11 @@ func (t *Template) BuildMessage(m toolkit.M) (*Message, error) {
 	} else {
 		return nil, errors.New("fail to generate message content from template: " + e.Error())
 	}
-	return nil, nil
+	return msg, nil
 }
 
-func translate(source string, data toolkit.M) (string, error) {
-	w := bytes.NewBufferString("")
-	tt, e := template.New("tmp").Parse(source)
-	if e != nil {
-		return source, e
+func (t *Template) Indexes() []dbflex.DbIndex {
+	return []dbflex.DbIndex{
+		{Name: "Name_Language_Index", IsUnique: true, Fields: []string{"Name", "LanguageID"}},
 	}
-
-	e = tt.Execute(w, data)
-	if e != nil {
-		return source, e
-	}
-
-	return w.String(), nil
 }

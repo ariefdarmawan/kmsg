@@ -8,7 +8,7 @@ import (
 	"git.kanosolution.net/kano/dbflex"
 	"git.kanosolution.net/kano/dbflex/orm"
 	"github.com/ariefdarmawan/datahub"
-	"github.com/eaciit/toolkit"
+	"github.com/sebarcode/codekit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -95,7 +95,7 @@ func NewMessage(h *datahub.Hub, kind, method, from, to, title, message string) (
 	return msg, nil
 }
 
-func NewMessageFromTemplate(h *datahub.Hub, msg *Message, templateName string, langID string, data toolkit.M) error {
+func NewMessageFromTemplate(h *datahub.Hub, msg *Message, templateName string, langID string, data codekit.M) error {
 	var e error
 
 	t := new(Template)

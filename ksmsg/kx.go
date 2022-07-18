@@ -2,20 +2,27 @@ package ksmsg
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"git.kanosolution.net/kano/kaos"
 	. "github.com/ariefdarmawan/kmsg"
-	"github.com/eaciit/toolkit"
+	"github.com/sebarcode/codekit"
 )
 
 type kx struct {
 	senders map[string]Sender
+	prefix  string
 }
 
 func NewKaosModel() *kx {
 	k := new(kx)
 	k.senders = make(map[string]Sender)
+	return k
+}
+
+func (k *kx) SetPrefix(p string) *kx {
+	k.prefix = p
 	return k
 }
 
@@ -28,7 +35,7 @@ type SendTemplateRequest struct {
 	Message      *Message
 	TemplateName string
 	LanguageID   string
-	Data         toolkit.M
+	Data         codekit.M
 }
 
 func (obj *kx) Create(ctx *kaos.Context, payload *Message) (string, error) {
@@ -65,6 +72,10 @@ func (obj *kx) SendMessage(ctx *kaos.Context, request *Message) (string, error) 
 	h, _ := ctx.DefaultHub()
 	if h == nil {
 		return "", errors.New("invalid hub")
+	}
+
+	if obj.prefix != "" && !strings.HasPrefix(request.Title, obj.prefix) {
+		request.Title = obj.prefix + " " + request.Title
 	}
 
 	if e = h.Save(request); e != nil {
@@ -107,10 +118,9 @@ func (k *kx) SendByID(ctx *kaos.Context, id string) (string, error) {
 
 			m.CreateAudit(h, "Fail", m.SendingAttempt, e.Error())
 			return
-			//return "", errors.New("process error: " + e.Error())
 		}
-		m.CreateAudit(h, "Success", m.SendingAttempt, "")
 
+		m.CreateAudit(h, "Success", m.SendingAttempt, "")
 		m.Status = "Sent"
 		m.Sent = time.Now()
 		h.Save(m)
