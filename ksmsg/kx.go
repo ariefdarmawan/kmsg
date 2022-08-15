@@ -6,18 +6,32 @@ import (
 	"time"
 
 	"git.kanosolution.net/kano/kaos"
+	"github.com/ariefdarmawan/datahub"
 	. "github.com/ariefdarmawan/kmsg"
 	"github.com/sebarcode/codekit"
 )
 
+type GetHubFn func(ctx *kaos.Context) *datahub.Hub
+
 type kx struct {
 	senders map[string]Sender
 	prefix  string
+
+	hubFn GetHubFn
+}
+
+func (k *kx) SetHubFn(fn GetHubFn) *kx {
+	k.hubFn = fn
+	return k
 }
 
 func NewKaosModel() *kx {
 	k := new(kx)
 	k.senders = make(map[string]Sender)
+	k.hubFn = func(ctx *kaos.Context) *datahub.Hub {
+		h, _ := ctx.DefaultHub()
+		return h
+	}
 	return k
 }
 
@@ -39,7 +53,7 @@ type SendTemplateRequest struct {
 }
 
 func (obj *kx) Create(ctx *kaos.Context, payload *Message) (string, error) {
-	h, _ := ctx.DefaultHub()
+	h := obj.hubFn(ctx)
 	if h == nil {
 		return "", errors.New("missingDBConn")
 	}
@@ -54,7 +68,7 @@ func (obj *kx) Create(ctx *kaos.Context, payload *Message) (string, error) {
 
 func (obj *kx) SendTemplate(ctx *kaos.Context, request *SendTemplateRequest) (string, error) {
 	var e error
-	h, _ := ctx.DefaultHub()
+	h := obj.hubFn(ctx)
 	if h == nil {
 		return "", errors.New("invalid hub")
 	}
@@ -69,7 +83,7 @@ func (obj *kx) SendTemplate(ctx *kaos.Context, request *SendTemplateRequest) (st
 
 func (obj *kx) SendMessage(ctx *kaos.Context, request *Message) (string, error) {
 	var e error
-	h, _ := ctx.DefaultHub()
+	h := obj.hubFn(ctx)
 	if h == nil {
 		return "", errors.New("invalid hub")
 	}
@@ -89,7 +103,7 @@ func (obj *kx) SendMessage(ctx *kaos.Context, request *Message) (string, error) 
 
 func (k *kx) SendByID(ctx *kaos.Context, id string) (string, error) {
 	var e error
-	h, _ := ctx.DefaultHub()
+	h := k.hubFn(ctx)
 	if h == nil {
 		return "", errors.New("invalid hub")
 	}
