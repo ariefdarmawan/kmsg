@@ -58,7 +58,7 @@ func (obj *kx) Create(ctx *kaos.Context, payload *Message) (string, error) {
 		return "", errors.New("missingDBConn")
 	}
 
-	msg, e := NewMessage(h, payload.Kind, payload.Method, payload.From, payload.To, payload.Title, payload.Messsage)
+	msg, e := NewMessage(h, payload.Kind, payload.Method, payload.From, payload.To, payload.Title, payload.Message)
 	if e != nil {
 		return "", e
 	}

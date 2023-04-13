@@ -2,6 +2,8 @@ module github.com/ariefdarmawan/kmsg
 
 go 1.16
 
+replace github.com/ariefdarmawan/flexpg v0.7.0 => github.com/ariefdarmawan/flexpg v0.7.1
+
 require (
 	git.kanosolution.net/kano/dbflex v1.2.5
 	git.kanosolution.net/kano/kaos v0.2.1

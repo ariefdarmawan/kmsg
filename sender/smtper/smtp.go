@@ -3,12 +3,14 @@ package smtper
 import (
 	"github.com/ariefdarmawan/kmsg"
 	"gopkg.in/gomail.v2"
+	"crypto/tls"
 )
 
 type Options struct {
 	Server       string
 	Port         int
 	TLS          bool
+	SkipVerify bool
 	Certificates []string
 	UID          string
 	Password     string
@@ -26,7 +28,12 @@ func NewSender(opts Options) *smtp {
 
 func (s *smtp) Send(msg *kmsg.Message) error {
 	d := gomail.NewDialer(s.opts.Server, s.opts.Port, s.opts.UID, s.opts.Password)
+	
 	// todo - tls and certificates
+	if s.opts.TLS && s.opts.SkipVerify  {
+		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+	
 
 	m := gomail.NewMessage()
 	if msg.From == "" {
@@ -36,7 +43,7 @@ func (s *smtp) Send(msg *kmsg.Message) error {
 	}
 	m.SetHeader("To", msg.To)
 	m.SetHeader("Subject", msg.Title)
-	m.SetBody("text/html", msg.Messsage)
+	m.SetBody("text/html", msg.Message)
 
 	// todo - attachment
 

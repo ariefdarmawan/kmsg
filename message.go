@@ -19,7 +19,7 @@ type Message struct {
 	From              string
 	To                string
 	Title             string
-	Messsage          string
+	Message          string
 	SendingAttempt    int
 	Status            string
 	Method            string
@@ -88,7 +88,7 @@ func NewMessage(h *datahub.Hub, kind, method, from, to, title, message string) (
 	msg.Method = method
 	msg.To = to
 	msg.Title = title
-	msg.Messsage = message
+	msg.Message = message
 	if e := h.Save(msg); e != nil {
 		return nil, errors.New("system error when create message: " + e.Error())
 	}
@@ -108,7 +108,7 @@ func NewMessageFromTemplate(h *datahub.Hub, msg *Message, templateName string, l
 		return errors.New("template-error: " + e.Error())
 	}
 	msg.Title = tm.Title
-	msg.Messsage = tm.Messsage
+	msg.Message = tm.Message
 
 	if e = h.Save(msg); e != nil {
 		return e

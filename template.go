@@ -49,7 +49,7 @@ func (t *Template) BuildMessage(m codekit.M) (*Message, error) {
 	}
 
 	if s, e := translate(t.Message, m); e == nil {
-		msg.Messsage = s
+		msg.Message = s
 	} else {
 		return nil, errors.New("fail to generate message content from template: " + e.Error())
 	}
