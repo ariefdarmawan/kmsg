@@ -60,9 +60,8 @@ git.kanosolution.net/kano/appkit v0.0.3 h1:V+Avl1X2uzCwsoXttgGfPGGxpFo+9120w7TBa
 git.kanosolution.net/kano/appkit v0.0.3/go.mod h1:R9lSLmv987MZYIcmW5QRFySaEGASi/k4iODXsbeTs+g=
 git.kanosolution.net/kano/dbflex v1.0.11/go.mod h1:JwhKlws6r/uBbPE126aJpHbq3x4iugF0ViJlE/fFg/k=
 git.kanosolution.net/kano/dbflex v1.2.1/go.mod h1:kMbDllDjd+lwhCO4XRrCJP1kP0X46iPPrNG7hblrbcA=
-git.kanosolution.net/kano/dbflex v1.2.5-0.20220713052237-2829fbd208ef/go.mod h1:FQZKWzBpYXNalY8syaXBjVBXyg58hIuUXQuIB08l7Zw=
-git.kanosolution.net/kano/dbflex v1.2.5 h1:NmyVT6ZNNkMNYfhVW8of/YfyF2E2KWNjY4XyFD8siy8=
-git.kanosolution.net/kano/dbflex v1.2.5/go.mod h1:FQZKWzBpYXNalY8syaXBjVBXyg58hIuUXQuIB08l7Zw=
+git.kanosolution.net/kano/dbflex v1.3.1 h1:tCSrKT9oA+ZJ4wOjjFQN5h+2NE/4re4fas1vsBZnPwA=
+git.kanosolution.net/kano/dbflex v1.3.1/go.mod h1:mqgrdJe4IIfuLOMf1qj5kJUkL2ckiQ3XcA8LFQfE9k4=
 git.kanosolution.net/kano/kaos v0.2.0/go.mod h1:NwMLC/+BhCXZ5Papa2nlsgay/PnGNd0hmz/v/q9oK6Y=
 git.kanosolution.net/kano/kaos v0.2.1 h1:61/5c1eIPqvmkeLsc41K0/4lk6fivH6aO8w7KyRQNow=
 git.kanosolution.net/kano/kaos v0.2.1/go.mod h1:xP4X/MUpDylSD8TavXFKNqb7fljbjjR2Aw8vA131xUM=
@@ -80,8 +79,8 @@ github.com/ariefdarmawan/byter v0.0.1 h1:MzwkmVtMq7azicAB9mVkIYIwTS1eWgWIUHcQZ7G
 github.com/ariefdarmawan/byter v0.0.1/go.mod h1:VCTku8tT3X2aqDRweung2VxCbPPWxEZ3Jktw37D121I=
 github.com/ariefdarmawan/datahub v0.1.13/go.mod h1:00QQV4kYSnE3rCdWZtHPmeoCdX533sP25nFS30eZSgU=
 github.com/ariefdarmawan/datahub v0.2.2/go.mod h1:/evipuY++BEb5b/HceMprpenYJPn78NP8Y0z4Gsercc=
-github.com/ariefdarmawan/datahub v0.2.4 h1:U/HDcqeAW7rdGakQmuiZo09iZhSDworssm/1H8crzMw=
-github.com/ariefdarmawan/datahub v0.2.4/go.mod h1:sar3HzckMBgeWeT3ZtcSufcZaP+Y6bHsApQUmbPif7o=
+github.com/ariefdarmawan/datahub v0.2.9 h1:yaxGiqqC2UZox2Koy6tsRdbP0sg64YW/F9mdO+vSwhM=
+github.com/ariefdarmawan/datahub v0.2.9/go.mod h1:qSRuj9dQ2Pr/Re98nsafe2AENa0VWfx09LKjcUcRyII=
 github.com/ariefdarmawan/flexmgo v0.1.15/go.mod h1:ZNVfnly+iMMBJ9sP142Kkt31CeQk+M8LLWYEfF59Qr8=
 github.com/ariefdarmawan/flexmgo v0.3.0 h1:UC38yWnCdfXrz8nCeHS9KjahLupWWSKz/PCB6rlTTV8=
 github.com/ariefdarmawan/flexmgo v0.3.0/go.mod h1:jhsXeMRcqEP7j+SG41WehSRoRVuWPhB2qf7IBSwpDQU=
