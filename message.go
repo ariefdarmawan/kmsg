@@ -3,6 +3,7 @@ package kmsg
 import (
 	"errors"
 	"fmt"
+	"io"
 	"time"
 
 	"git.kanosolution.net/kano/dbflex"
@@ -102,7 +103,12 @@ func NewMessageFromTemplate(h *datahub.Hub, msg *Message, templateName string, l
 
 	t := new(Template)
 	if e = h.GetByFilter(t, dbflex.And(dbflex.Eq("Name", templateName), dbflex.Eq("LanguageID", langID))); e != nil {
-		return e
+		if e != io.EOF {
+			return e
+		}
+
+		t.Title = templateName
+		t.Message = "{{.}}"
 	}
 
 	tm, e := t.BuildMessage(data)
