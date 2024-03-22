@@ -18,8 +18,10 @@ type Message struct {
 	Kind              string
 	From              string
 	To                string
+	Cc                []string
+	Bcc               []string
 	Title             string
-	Message          string
+	Message           string
 	SendingAttempt    int
 	Status            string
 	Method            string

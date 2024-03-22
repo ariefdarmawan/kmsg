@@ -2,6 +2,7 @@ package smtper
 
 import (
 	"crypto/tls"
+
 	"github.com/ariefdarmawan/kmsg"
 	"gopkg.in/gomail.v2"
 )
@@ -40,6 +41,16 @@ func (s *smtp) Send(msg *kmsg.Message) error {
 		m.SetHeader("From", msg.From)
 	}
 	m.SetHeader("To", msg.To)
+	if len(msg.Cc) > 0 {
+		for _, cc := range msg.Cc {
+			m.SetAddressHeader("Cc", cc, "")
+		}
+	}
+	if len(msg.Bcc) > 0 {
+		for _, cc := range msg.Bcc {
+			m.SetAddressHeader("Bcc", cc, "")
+		}
+	}
 	m.SetHeader("Subject", msg.Title)
 	m.SetBody("text/html", msg.Message)
 
