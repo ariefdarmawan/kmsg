@@ -17,10 +17,10 @@ func TestSend(t *testing.T) {
 	}
 
 	sender := smtper.NewSender(opts)
-	err := sender.Send(&kmsg.Message{From: "internal.app@kanosolution.com",
-		To:      "ariefda@hotmail.com",
-		Cc:      []string{"adarmawan.2006@gmail.com", "arief@kanosolution.com"},
-		Bcc:     []string{"arief@ciptaprimanugraha.com"},
+	err := sender.Send(&kmsg.Message{From: "",
+		To:      "email1@hotmail.com",
+		Cc:      []string{"email2@hotmail.com", "email1@gmail.com"},
+		Bcc:     []string{"email2@gmail.com"},
 		Title:   "Pengiriman yang dilakukan secara buta",
 		Message: "Pesan ini dikirikan kepada anda sebagai bukti bahwa fungsi gomail sudah berjalan dengan lancar",
 	})
